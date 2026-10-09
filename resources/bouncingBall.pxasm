@@ -1,0 +1,51 @@
+; bouncing pixel — a ball drifts around the screen and
+; bounces off the four walls. no input needed, just run it.
+
+  MOV r0, #10      ; x position
+  MOV r1, #10      ; y position
+  MOV r2, #2       ; x velocity
+  MOV r3, #1       ; y velocity
+  MOV r4, #8       ; color index (see palette)
+
+loop:
+  CLS #0
+  PIX r0, r1, r4
+  ADD r0, r2
+  ADD r1, r3
+
+  CMP r0, #0
+  JG  skipL
+  MOV r2, #2
+skipL:
+  CMP r0, #99
+  JL  skipR
+  MOV r2, #-2
+skipR:
+  CMP r1, #0
+  JG  skipT
+  MOV r3, #1
+skipT:
+  CMP r1, #99
+  JL  skipB
+  MOV r3, #-1
+skipB:
+
+  CMP r0, #0
+  JGE cxok1
+  MOV r0, #0
+cxok1:
+  CMP r0, #99
+  JLE cxok2
+  MOV r0, #99
+cxok2:
+  CMP r1, #0
+  JGE cyok1
+  MOV r1, #0
+cyok1:
+  CMP r1, #99
+  JLE cyok2
+  MOV r1, #99
+cyok2:
+
+  WAIT
+  JMP loop

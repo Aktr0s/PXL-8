@@ -1,0 +1,56 @@
+; arrow-key cursor — KEY reads a bitmask of held keys into a
+; register: bit0 up, bit1 down, bit2 left, bit3 right.
+; move around and paint a trail.
+
+  MOV r0, #50      ; x
+  MOV r1, #50      ; y
+  MOV r2, #11      ; color
+
+loop:
+  KEY r3
+
+  MOV r4, r3
+  AND r4, #1
+  CMP r4, #0
+  JZ  skip_up
+  SUB r1, #1
+skip_up:
+  MOV r4, r3
+  AND r4, #2
+  CMP r4, #0
+  JZ  skip_down
+  ADD r1, #1
+skip_down:
+  MOV r4, r3
+  AND r4, #4
+  CMP r4, #0
+  JZ  skip_left
+  SUB r0, #1
+skip_left:
+  MOV r4, r3
+  AND r4, #8
+  CMP r4, #0
+  JZ  skip_right
+  ADD r0, #1
+skip_right:
+
+  CMP r0, #0
+  JGE xok1
+  MOV r0, #0
+xok1:
+  CMP r0, #99
+  JLE xok2
+  MOV r0, #99
+xok2:
+  CMP r1, #0
+  JGE yok1
+  MOV r1, #0
+yok1:
+  CMP r1, #99
+  JLE yok2
+  MOV r1, #99
+yok2:
+
+  PIX r0, r1, r2
+  WAIT
+  JMP loop

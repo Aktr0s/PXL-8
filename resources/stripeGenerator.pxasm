@@ -1,0 +1,27 @@
+; stripe generator — sweeps a shifting pattern of vertical
+; stripes across the screen using RND and MOD.
+
+  MOV r7, #0       ; frame counter
+
+loop:
+  MOV r0, #0       ; x = 0
+
+col_loop:
+  MOV r1, r0
+  ADD r1, r7
+  MOD r1, #16      ; color = (x + frame) % 16
+
+  MOV r2, #0       ; y = 0
+row_loop:
+  PIX r0, r2, r1
+  INC r2
+  CMP r2, #99
+  JLE row_loop
+
+  INC r0
+  CMP r0, #99
+  JLE col_loop
+
+  INC r7
+  WAIT
+  JMP loop
