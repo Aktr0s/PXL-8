@@ -72,7 +72,7 @@ bool Assemble(const std::vector<std::string>& codeLines, std::vector<Instruction
 {
     if (codeLines.empty())
     {
-        invokeMessageBox("No assembly code to run, make sure the file is properly loaded");
+        invokeMessageBox("No assembly code to run, make sure the file is properly loaded", MessageBoxType::Info);
         return false;
     }
     outProgram.clear();
@@ -83,7 +83,7 @@ bool Assemble(const std::vector<std::string>& codeLines, std::vector<Instruction
         RawLine rl = TokenizeLine(codeLines[i], (int)i + 1);
         if (!rl.label.empty()) {
             if (labels.count(rl.label)) {
-                invokeMessageBox(AtLine(rl.sourceLine, "Duplicate label \"" + rl.label + "\"").c_str());
+                invokeMessageBox(AtLine(rl.sourceLine, "Duplicate label \"" + rl.label + "\"").c_str(),MessageBoxType::Debug);
                 return false;
             }
             labels[rl.label] = (int)raw.size();
@@ -96,7 +96,7 @@ bool Assemble(const std::vector<std::string>& codeLines, std::vector<Instruction
     for (auto& rl : raw) {
         auto opIt = table.find(rl.opcode);
         if (opIt == table.end()) {
-            invokeMessageBox(AtLine(rl.sourceLine, "Unknown instruction \"" + rl.opcode + "\"").c_str());
+            invokeMessageBox(AtLine(rl.sourceLine, "Unknown instruction \"" + rl.opcode + "\"").c_str(), MessageBoxType::Debug);
             return false;
         }
 
@@ -106,12 +106,12 @@ bool Assemble(const std::vector<std::string>& codeLines, std::vector<Instruction
 
         if (IsJump(ins.op)) {
             if (rl.operandStrs.size() != 1) {
-                invokeMessageBox(AtLine(rl.sourceLine, rl.opcode + " expects exactly one label").c_str());
+                invokeMessageBox(AtLine(rl.sourceLine, rl.opcode + " expects exactly one label").c_str(), MessageBoxType::Debug);
                 return false;
             }
             auto labelIt = labels.find(rl.operandStrs[0]);
             if (labelIt == labels.end()) {
-                invokeMessageBox(AtLine(rl.sourceLine, "Unknown label \"" + rl.operandStrs[0] + "\"").c_str());
+                invokeMessageBox(AtLine(rl.sourceLine, "Unknown label \"" + rl.operandStrs[0] + "\"").c_str(), MessageBoxType::Debug);
                 return false;
             }
             ins.target = labelIt->second;
@@ -119,7 +119,7 @@ bool Assemble(const std::vector<std::string>& codeLines, std::vector<Instruction
             int expected = OperandCount(ins.op);
             if ((int)rl.operandStrs.size() != expected) {
                 invokeMessageBox(AtLine(rl.sourceLine, rl.opcode + " expects " + std::to_string(expected) +
-                                  " operand(s), got " + std::to_string(rl.operandStrs.size())).c_str());
+                                  " operand(s), got " + std::to_string(rl.operandStrs.size())).c_str(), MessageBoxType::Debug);
                 return false;
             }
             for (auto& s : rl.operandStrs) {

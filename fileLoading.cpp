@@ -98,7 +98,7 @@ void attemptFileDialog(GuiPXL8State *ui)
 
             //showMessageBox = true;
             //strcpy(errorMessage,"Wrong file or no file selected");
-            invokeMessageBox("Wrong file or no file selected");
+            invokeMessageBox("Wrong file or no file selected", MessageBoxType::Warning);
         }
         fileDialogState.SelectFilePressed = false;
     }
@@ -118,7 +118,7 @@ void attemptFileDialog(GuiPXL8State *ui)
         {
             //strcpy(errorMessage,"No file to reload");
             //showMessageBox = true;
-            invokeMessageBox("No file to reload");
+            invokeMessageBox("No file to reload", MessageBoxType::Info);
         }
     }
     if (fileDialogState.windowActive) GuiLock();

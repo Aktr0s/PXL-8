@@ -38,7 +38,7 @@ Operand ParseOperand(const std::string& token) {
         std::string num = token.substr(1);
         int value;
         if (!IsNumberLiteral(num) || !ParseNumberLiteral(num, value)) {
-            invokeMessageBox(("Bad immediate \"" + token + "\"").c_str());
+            invokeMessageBox(("Bad immediate \"" + token + "\"").c_str(),MessageBoxType::Debug);
             return { OperandType::INVALID };
         }
         return { OperandType::IMM, value };
@@ -48,7 +48,7 @@ Operand ParseOperand(const std::string& token) {
         std::string inner = token.substr(1, token.size() - 2);
         int value;
         if (!IsNumberLiteral(inner) || !ParseNumberLiteral(inner, value)) {
-            invokeMessageBox(("Bad memory address \"" + token + "\"").c_str());
+            invokeMessageBox(("Bad memory address \"" + token + "\"").c_str(),MessageBoxType::Debug);
             return { OperandType::INVALID };
         }
         return { OperandType::MEM, value };
@@ -57,7 +57,7 @@ Operand ParseOperand(const std::string& token) {
     if (token.size() == 2 && (token[0] == 'r' || token[0] == 'R') && isdigit((unsigned char)token[1])) {
         int idx = token[1] - '0';
         if (idx < 0 || idx > 7) {
-            invokeMessageBox(("Unknown register \"" + token + "\"").c_str());
+            invokeMessageBox(("Unknown register \"" + token + "\"").c_str(), MessageBoxType::Debug);
             return { OperandType::INVALID };
         }
         return { OperandType::REG, idx };
@@ -67,6 +67,6 @@ Operand ParseOperand(const std::string& token) {
     if (IsNumberLiteral(token) && ParseNumberLiteral(token, value))
         return { OperandType::IMM, value };
 
-    invokeMessageBox(("Cannot parse operand \"" + token + "\"").c_str());
+    invokeMessageBox(("Cannot parse operand \"" + token + "\"").c_str(), MessageBoxType::Debug);
     return { OperandType::INVALID };
 }

@@ -35,7 +35,7 @@ void SetFlags(VM& v, int result) {
 static void RuntimeFail(VM& v, const std::string& msg) {
     v.halted = true;
     running = false;
-    invokeMessageBox(msg.c_str());
+    invokeMessageBox(msg.c_str(), MessageBoxType::Error);
 }
 
 StepResult Step(VM& v, const std::vector<Instruction>& prog) {

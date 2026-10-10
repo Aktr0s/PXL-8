@@ -13,6 +13,15 @@ extern "C" {
 
 inline bool showMessageBoxVisible = false;
 inline char errorMessage[128];
+inline char errorTitle[32];
+
+enum MessageBoxType
+{
+    Warning,
+    Info,
+    Error,
+    Debug
+};
 
 inline void attemptMessageBox(const GuiPXL8State *ui)
 {
@@ -34,7 +43,7 @@ inline void attemptMessageBox(const GuiPXL8State *ui)
                 boxWidth,
                 100
             },
-            GuiIconText(ICON_WARNING, "Error"),
+            errorTitle,
             errorMessage,
             "Ok",
             &btnActive
@@ -47,8 +56,29 @@ inline void attemptMessageBox(const GuiPXL8State *ui)
     }
 }
 
-inline void invokeMessageBox(const char *message)
+inline void invokeMessageBox(const char *message, MessageBoxType type)
 {
+    switch (type) {
+    case Warning:
+        strncpy(errorTitle, GuiIconText(ICON_CIRCLE_WARNING_FILL, "Warning"),
+                sizeof(errorTitle) - 1);
+        break;
+
+    case Info:
+        strncpy(errorTitle, GuiIconText(ICON_INFO, "Info"),
+                sizeof(errorTitle) - 1);
+        break;
+
+    case Error:
+        strncpy(errorTitle, GuiIconText(ICON_WARNING, "Error"),
+                sizeof(errorTitle) - 1);
+        break;
+
+    case Debug:
+        strncpy(errorTitle, GuiIconText(ICON_GEAR, "Debug"),
+                sizeof(errorTitle) - 1);
+        break;
+    }
     strcpy(errorMessage, message);
     showMessageBoxVisible = true;
 }
