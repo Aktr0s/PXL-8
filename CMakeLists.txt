@@ -21,11 +21,15 @@ if(WIN32)
     configure_file(resources/PXL-8.rc.in ${CMAKE_BINARY_DIR}/PXL-8.rc)
     list(APPEND PLATFORM_SOURCES ${CMAKE_BINARY_DIR}/PXL-8.rc)
 elseif(APPLE)
-    # macOS: icon lives in the .app bundle (needs resources/PXL-8.icns)
-    set(MAC_ICON ${CMAKE_SOURCE_DIR}/resources/PXL-8.icns)
-    if(EXISTS ${MAC_ICON})
-        set_source_files_properties(${MAC_ICON} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
-        list(APPEND PLATFORM_SOURCES ${MAC_ICON})
+    # macOS: app icon bundled in Contents/Resources
+    set(MAC_ICON "${CMAKE_SOURCE_DIR}/resources/PXL-8_mac.icns")
+
+    if(EXISTS "${MAC_ICON}")
+        set_source_files_properties("${MAC_ICON}"
+            PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
+        list(APPEND PLATFORM_SOURCES "${MAC_ICON}")
+    else()
+        message(WARNING "macOS icon not found: ${MAC_ICON}")
     endif()
 endif()
 
@@ -56,14 +60,18 @@ if(WIN32)
             $<TARGET_FILE_DIR:PXL_8>)
 
 elseif(APPLE)
-    # macOS: threads are part of the system, and the system libs can't be static.
-    # Result is a self-contained .app bundle.
+    # macOS: create a .app bundle
     find_package(Threads REQUIRED)
     target_link_libraries(PXL_8 PRIVATE Threads::Threads)
+
     set_target_properties(PXL_8 PROPERTIES
-            MACOSX_BUNDLE TRUE
-            MACOSX_BUNDLE_BUNDLE_NAME "PXL-8"
-            MACOSX_BUNDLE_ICON_FILE "PXL-8.icns")
+        MACOSX_BUNDLE TRUE
+        MACOSX_BUNDLE_BUNDLE_NAME "PXL-8"
+        MACOSX_BUNDLE_GUI_IDENTIFIER "com.aktr0s.pxl8"
+        MACOSX_BUNDLE_ICON_FILE "PXL-8_mac.icns"
+        MACOSX_BUNDLE_BUNDLE_VERSION "1.0.0"
+        MACOSX_BUNDLE_SHORT_VERSION_STRING "1.0.0"
+    )
 
 else()
     # Linux: embed libgcc + libstdc++, link threads

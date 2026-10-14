@@ -1,0 +1,13 @@
+.DS_Store
+.cmake/
+CMakeCache.txt
+CMakeFiles/
+CPackConfig.cmake
+CPackSourceConfig.cmake
+Makefile
+PXL_8.app/
+PXL_8
+Testing/
+_deps/
+cmake_install.cmake
+

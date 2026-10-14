@@ -12,7 +12,7 @@
 extern "C" {
 #endif
 
-constexpr int GRID = 100;
+#define GRID 100
 extern Color SandboxPlane[GRID][GRID];
 
 void drawSandboxGrid();

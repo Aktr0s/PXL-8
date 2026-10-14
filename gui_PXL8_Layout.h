@@ -26,7 +26,8 @@
 #undef RAYGUI_IMPLEMENTATION
 #include "raygui.h"
 
-#include <string.h>     // Required for: strcpy()
+#include <string>
+#include <vector>
 
 #pragma once
 
@@ -36,7 +37,7 @@
 #include "VM.hpp"
 
 
-typedef struct {
+struct GuiPXL8State{
     // Define anchors
     Vector2 anchor01;            // ANCHOR ID:1
     
@@ -46,8 +47,7 @@ typedef struct {
     Vector2 CodeScrollPanelBoundsOffset;    // ScrollPanel: CodeScrollPanel
     bool SPFSpinnerEditMode;
     int SPFSpinnerValue;
-    char **codeLines;
-    int codeLineCount;
+    std::vector<std::string> codeLines;
 
     // Custom state variables (depend on development software)
     // NOTE: This variables should be added manually if required
@@ -58,7 +58,10 @@ typedef struct {
     bool helpWindowRequested;
     char fileLocation[512] = {"/"};
 
-} GuiPXL8State;
+};
+
+GuiPXL8State InitGuiPXL8(void); //
+
 
 #ifdef __cplusplus
 extern "C" {            // Prevents name mangling of functions
@@ -77,7 +80,6 @@ extern "C" {            // Prevents name mangling of functions
 //----------------------------------------------------------------------------------
 // Module Functions Declaration
 //----------------------------------------------------------------------------------
-GuiPXL8State InitGuiPXL8(void);
 void GuiPXL8(GuiPXL8State *state);
 void GuiPXL8SetHighlightLine(GuiPXL8State *state, int line);    // Highlight a line (-1 = none) and scroll to it
 static void StartButton();                // Button: StartButton logic
@@ -275,7 +277,7 @@ void GuiPXL8(GuiPXL8State *state)
     float innerW = codeBounds.width - 2*border;
     float innerH = codeBounds.height - 2*border;
 
-    float contentH = state->codeLineCount*CODE_LINE_HEIGHT;
+    float contentH = state->codeLines.size()*CODE_LINE_HEIGHT;
     bool needsVScroll = (contentH > innerH);
     if (contentH < innerH) contentH = innerH;                 // fill the panel when the file is short
 
@@ -323,7 +325,7 @@ void GuiPXL8(GuiPXL8State *state)
     int first = (int)(-state->CodeScrollPanelScrollOffset.y/CODE_LINE_HEIGHT);
     if (first < 0) first = 0;
     int last = first + (int)(view.height/CODE_LINE_HEIGHT) + 2;
-    if (last > state->codeLineCount) last = state->codeLineCount;
+    if (last > state->codeLines.size()) last = state->codeLines.size();
 
     for (int i = first; i < last; i++)
     {
@@ -336,7 +338,7 @@ void GuiPXL8(GuiPXL8State *state)
         }
 
         GuiLabel((Rectangle){ ox + 8, lineY, 800, CODE_LINE_HEIGHT },
-                 state->codeLines[i]);
+                 state->codeLines[i].c_str());
     }
 
     EndScissorMode();

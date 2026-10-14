@@ -28,10 +28,12 @@ static Color palette[] = {
     {255, 204, 170, 255}, // peach
 };
 
+static const int PALETTE_SIZE = sizeof(palette) / sizeof(palette[0]);
+
 void drawSandboxGrid()
 {
-    for (int i = 0; i < GRID; i++) {
-        for (int j = 0; j < GRID; j++) {
+      for (int i = 0; i < GRID; i++) {
+          for (int j = 0; j < GRID; j++) {
             DrawRectangle(i * SCALE + xoffset, j * SCALE + yoffset, SCALE, SCALE, SandboxPlane[i][j]);
         }
     }
@@ -39,11 +41,10 @@ void drawSandboxGrid()
 
 void testPatternOverride()
 {
-    constexpr int PALETTE_SIZE = sizeof(palette) / sizeof(palette[0]);
     for (int y = 0; y < GRID; y++) {
         for (int x = 0; x < GRID; x++) {
             SandboxPlane[x][y] = palette[x % PALETTE_SIZE];
-        }
+        } 
     }
 }
 
@@ -63,11 +64,10 @@ void initSandboxGrid() //No need for this function just so i can fill it in blac
 
 void syncSandboxGridFromVM(const uint8_t* vmFramebuffer)
 {
-    constexpr int PALETTE_SIZE = sizeof(palette) / sizeof(palette[0]);
     for (int y = 0; y < GRID; y++) {
         for (int x = 0; x < GRID; x++) {
             uint8_t idx = vmFramebuffer[y * GRID + x]; // VM stores row-major: y*width + x
             SandboxPlane[x][y] = palette[idx % PALETTE_SIZE];
         }
-    }
+    } 
 }

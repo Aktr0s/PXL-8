@@ -29,16 +29,13 @@ static void UpdateKeyState()
 
 int main() {
 
-    char *asmLines[] = {"To begin, Load a file with PXL-8 Assembly Code (.pxasm)"};
-
     InitWindow(1280, 720, "PXL-8: Assembly Graphical Sandbox");
     GuiLoadStyleCandy();
     //GuiLoadStyleDark();
     GuiWindowHelpState helpUI = InitGuiWindowHelp();
     helpUI.windowActive = true;
     GuiPXL8State ui = InitGuiPXL8();
-    ui.codeLines = asmLines;
-    ui.codeLineCount = std::size(asmLines);
+    ui.codeLines = {"To begin, Load a file with PXL-8 Assembly Code (.pxasm)"};
     GuiPXL8SetHighlightLine(&ui, 0);
     initFileDialog();
     SetTargetFPS(100);

@@ -26,7 +26,8 @@ static GuiWindowFileDialogState fileDialogState;
 
 void initFileDialog()
 {
-    fileDialogState = InitGuiWindowFileDialog(GetWorkingDirectory());
+    const char* home = getenv("HOME"); //For MacOS when launching thru .app
+    fileDialogState = InitGuiWindowFileDialog(home ? home : GetWorkingDirectory());
     strcpy(fileDialogState.filterExt, ".pxasm");
 }
 
@@ -47,8 +48,7 @@ static void handleScrollBox(GuiPXL8State *ui, const char *filename)  // NOT TO B
 
         if (!loadedFileText)
         {
-            ui->codeLines = nullptr;
-            ui->codeLineCount = 0;
+            ui->codeLines.clear();
             return;
         }
 
@@ -75,8 +75,13 @@ static void handleScrollBox(GuiPXL8State *ui, const char *filename)  // NOT TO B
             }
         }
 
-        ui->codeLines = loadedLines.data();
-        ui->codeLineCount = static_cast<int>(loadedLines.size());
+        ui->codeLines.clear();
+        ui->codeLines.reserve(loadedLines.size());
+
+        for (const char* line : loadedLines)
+        {
+            ui->codeLines.emplace_back(line);
+        }
 
         loadFile();
     }
