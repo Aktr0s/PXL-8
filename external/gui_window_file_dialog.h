@@ -417,9 +417,6 @@ static inline int FileCompare(const char *d1, const char *d2, const char *dir)
     if (b1 && !b2) return -1;
     if (!b1 && b2) return 1;
 
-    if (!FileExists(TextFormat("%s" PATH_SEPERATOR "%s", dir, d1))) return 1;
-    if (!FileExists(TextFormat("%s" PATH_SEPERATOR "%s", dir, d2))) return -1;
-
     return strcmp(d1, d2);
 }
 
@@ -429,6 +426,24 @@ static void ReloadDirectoryFiles(GuiWindowFileDialogState *state)
     UnloadDirectoryFiles(state->dirFiles);
 
     state->dirFiles = LoadDirectoryFilesEx(state->dirPathText, (state->filterExt[0] == '\0')? "*.*" : TextFormat("DIRS*;%s", state->filterExt), false);
+    
+    // Sort directory entries
+    for (unsigned int i = 1; i < state->dirFiles.count; i++)
+    {
+        char *key = state->dirFiles.paths[i];
+        unsigned int j = i;
+    
+        while (j > 0 &&
+               FileCompare(key, state->dirFiles.paths[j - 1],
+                           state->dirPathText) < 0)
+        {
+            state->dirFiles.paths[j] = state->dirFiles.paths[j - 1];
+            j--;
+        }
+    
+        state->dirFiles.paths[j] = key;
+    }
+
     state->itemFocused = 0;
 
     // Reset dirFilesIcon memory

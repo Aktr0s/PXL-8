@@ -173,10 +173,11 @@ bool blinkFunc(bool enabled) // Helper function (piece of shit)
     return !blink;
 }
 
+
 // Button: StartButton logic
-static void StartButton()
+static void StartButton() // Unused, added calls directly for cleaner code
 {
-    RunProgram();
+    AssembleRunButtonPass();
 }
 // Button: StopButton logic
 static void StopButton()
@@ -224,9 +225,28 @@ void GuiPXL8(GuiPXL8State *state)
 
     GuiPanel((Rectangle){ state->anchor01.x + 0, state->anchor01.y + 0, 1280, 720 }, NULL);
     GuiGroupBox((Rectangle){ state->anchor01.x + 856, state->anchor01.y + 128, 415, 420 }, "Graphical Sandbox");
-    if (GuiButton((Rectangle){ state->anchor01.x + 856, state->anchor01.y + 88, 120, 24 }, "Assemble and Run")) StartButton();
+    
+     if (running && !AssembleRequired){
+        GuiLock();
+        if (GuiButton((Rectangle){ state->anchor01.x + 856, state->anchor01.y + 88, 120, 24 }, GuiIconText(ICON_LOCK_CLOSE, "Run"))) StartButton();
+    } else if (!running && AssembleRequired){
+        if (GuiButton((Rectangle){ state->anchor01.x + 856, state->anchor01.y + 88, 120, 24 }, GuiIconText(ICON_FILETYPE_BINARY, "Assemble"))) StartButton();
+    } else if (!running && !AssembleRequired){
+        if (GuiButton((Rectangle){ state->anchor01.x + 856, state->anchor01.y + 88, 120, 24 }, GuiIconText(ICON_ARROW_RIGHT_FILL, "Run"))) StartButton();
+    } else {
+        // This should never be reached!
+    }
+    GuiUnlock();
+
+
+    if (!running) GuiLock();
     if (GuiButton((Rectangle){ state->anchor01.x + 984, state->anchor01.y + 88, 64, 24 }, "Stop")) StopButton();
+    GuiUnlock();
+    
+    if (running) GuiLock();
     if (GuiButton((Rectangle){ state->anchor01.x + 1056, state->anchor01.y + 88, 56, 24 }, "Step")) StepButton();
+    GuiUnlock();
+
     GuiGroupBox((Rectangle){ state->anchor01.x + 856, state->anchor01.y + 560, 400, 104 }, "Registers");
     GuiLabel((Rectangle){ state->anchor01.x + 864, state->anchor01.y + 568, 25, 24 }, "R0: ");
     GuiLabel((Rectangle){ state->anchor01.x + 992, state->anchor01.y + 568, 25, 24 }, "R1: ");

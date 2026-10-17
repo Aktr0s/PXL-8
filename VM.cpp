@@ -11,6 +11,8 @@ VM vm;
 std::vector<Instruction> program;
 std::vector<std::string> codeLines;
 bool running = false;
+bool AssembleRequired = true;
+bool firstBoot = true;
 int lastExecutedLine = -1;
 
 int GetVal(VM& v, const Operand& op) {
@@ -114,10 +116,27 @@ StepResult Step(VM& v, const std::vector<Instruction>& prog) {
 }
 
 void LoadCode(const std::vector<std::string>& lines) {
+    printf("%s","LoadCode CALLED!");
     codeLines = lines;
+    AssembleRequired = true;
+    if (firstBoot){
+        firstBoot = false;
+    }
 }
 
-void RunProgram() {
+void AssembleRunButtonPass() {
+    if (firstBoot){
+        invokeMessageBox("Load a file first!", MessageBoxType::Warning);
+    } else if (!running && AssembleRequired){
+        AssembleProgram();
+    } else if (!running && !AssembleRequired){
+        RunProgram();
+    } else {
+        // This should never be reached!
+    }
+}
+
+void AssembleProgram() {
     std::vector<Instruction> newProgram;
     if (!Assemble(codeLines, newProgram)) {
         // Assemble() already showed the message box describing what's wrong.
@@ -126,19 +145,25 @@ void RunProgram() {
     }
     program = std::move(newProgram);
     vm = VM();
+    AssembleRequired = false;
+}
+
+void RunProgram() {
     running = true;
 }
 
 void StopProgram() { running = false; }
 
+
 void StepProgram() {
-    if (program.empty()) RunProgram();
+    if (program.empty() || AssembleRequired) invokeMessageBox("Assemble program first!", MessageBoxType::Warning); 
     if (!program.empty()) Step(vm, program);
 }
 
 void ResetProgram() {
     vm = VM();
     running = false;
+    AssembleRequired = true;
     lastExecutedLine = -1;
     program.clear();
 }

@@ -38,11 +38,15 @@ extern VM vm;
 extern std::vector<Instruction> program;
 extern std::vector<std::string> codeLines;
 extern bool running;
+extern bool AssembleRequired;
+extern bool firstBoot;
 extern int lastExecutedLine;
 
 void LoadCode(const std::vector<std::string>& lines);
-void RunProgram();                          // (re)assemble codeLines and start; shows a box and stops on error
+void RunProgram();                          // (start; shows a box and stops on error
+void AssembleProgram();                     // re)assemble codeLines and 
 void StopProgram();
+void AssembleRunButtonPass();
 void StepProgram();                         // execute exactly one instruction
 void ResetProgram();                        // clear VM state, stop running
 void TickProgram(int instructionsPerFrame); // call once per raylib frame while running, unused switched for Instruction Per Second
