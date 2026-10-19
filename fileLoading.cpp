@@ -17,7 +17,7 @@
 #include "gui_window_file_dialog.h"
 
 #include "fileLoading.hpp"
-#include "messageBox.h"
+#include "messageBox.hpp"
 #include "VM.hpp"
 
 static char *loadedFileText = nullptr;

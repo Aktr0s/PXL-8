@@ -4,7 +4,7 @@
 
 #include "VM.hpp"
 #include "Assembler.hpp"
-#include "messageBox.h"
+#include "messageBox.hpp"
 #include "raylib.h"
 
 VM vm;

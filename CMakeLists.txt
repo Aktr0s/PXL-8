@@ -36,7 +36,7 @@ endif()
 add_executable(PXL_8 main.cpp ${PLATFORM_SOURCES}
         sandboxGrid.h sandboxGrid.c
         fileLoading.hpp fileLoading.cpp
-        messageBox.h
+        messageBox.hpp
         Operand.hpp Operand.cpp
         Instruction.hpp
         Assembler.hpp Assembler.cpp

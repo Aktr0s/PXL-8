@@ -6,10 +6,7 @@
 #define PXL_8_MESSAGEBOX_H
 #include "gui_PXL8_Layout.h"
 #include "raylib.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include <cstring>
 
 inline bool showMessageBoxVisible = false;
 inline char errorMessage[128];
@@ -83,9 +80,5 @@ inline void invokeMessageBox(const char *message, MessageBoxType type)
     showMessageBoxVisible = true;
 }
 
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif //PXL_8_MESSAGEBOX_H

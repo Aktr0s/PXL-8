@@ -9,7 +9,7 @@
 
 #include "fileLoading.hpp"
 #include "gui_PXL8_Layout.h"
-#include "messageBox.h"
+#include "messageBox.hpp"
 #include "style_candy.h"
 #include "style_dark.h"
 #include "sandboxGrid.h"
